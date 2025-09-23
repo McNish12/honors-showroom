@@ -1,4 +1,4 @@
-# Rocket Catalog Theme Starter
+# Honors Showroom Theme Starter
 
 This is a minimal, dependency-light starter theme for your OMG Company Store look, designed for version control in GitHub.
 
