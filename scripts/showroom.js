@@ -57,7 +57,7 @@
     }
   ];
 
-  const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/800x600?text=No+Image';
+  const PLACEHOLDER_IMAGE = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+PHJlY3QgZmlsbD0iI2UyZThmMCIgd2lkdGg9IjgwMCIgaGVpZ2h0PSI2MDAiLz48ZyBmaWxsPSIjMzM0MTU1IiBmb250LWZhbWlseT0iSW50ZXIsICJTZWdvZSBVSSIsIHNhbnMtc2VyaWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjx0ZXh0IHg9IjQwMCIgeT0iMzEwIiBmb250LXNpemU9IjQ4Ij5ObyBJbWFnZTwvdGV4dD48L2c+PC9zdmc+';
   const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 
   const state = {
