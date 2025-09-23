@@ -1,6 +1,6 @@
 // Published-to-web CSVs for Products & Variants
-const PRODUCTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQyKnlMtRQJKbmCkI7loITX-K8M-iF8jUfSwSQOw8wIio1eZLFKq_WsAfArkfG4eaGKQkuV3imHocOv/pub?gid=653601520&single=true&output=csv";
-const VARIANTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQyKnlMtRQJKbmCkI7loITX-K8M-iF8jUfSwSQOw8wIio1eZLFKq_WsAfArkfG4eaGKQkuV3imHocOv/pub?gid=140795318&single=true&output=csv";
+const PRODUCTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRU7hseo3Sa3Y5oTSb5fIjItVIC8JKW0lJdRFK4bCpxQJHfz9nTQjSXrh2Bhkx5J5gG69PO4IRUYIg0/pubhtml?gid=653601520&single=true&output=csv";
+const VARIANTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRU7hseo3Sa3Y5oTSb5fIjItVIC8JKW0lJdRFK4bCpxQJHfz9nTQjSXrh2Bhkx5J5gG69PO4IRUYIg0/pubhtml?gid=653601520&single=true&output=csv";
 
 async function fetchCSV(url){
   const res = await fetch(url,{cache:'no-store'});
