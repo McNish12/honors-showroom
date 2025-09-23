@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Honors Showroom Preview</title>
+  <link rel="icon" type="image/png" href="Assets/Honors/Honors%20Thick%20Logo.png" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="topbar" role="banner">
+    <div class="wrap">
+      <span>Previewing the Honors showroom catalog.</span>
+      <a href="mailto:support@honorsone.com">Need help?</a>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="nav" role="navigation" aria-label="Primary">
+      <a class="brand" href="#home">
+        <img src="Assets/Honors/Honors%20Thick%20Logo.png" alt="Honors Showroom" />
+      </a>
+      <nav class="navlinks" id="nav" aria-label="Product categories">
+        <a class="nav-link" href="#/c/all">All Products</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="controls" aria-label="Catalog filters">
+    <input id="search" type="search" placeholder="Search products" autocomplete="off" aria-label="Search catalog" />
+
+    <select id="collection" aria-label="Filter by collection">
+      <option value="">All collections</option>
+      <option value="fast-turn">Fast Turn Favorites</option>
+      <option value="apparel">Apparel</option>
+      <option value="awards">Awards</option>
+    </select>
+
+    <select id="price-tier" aria-label="Filter by price tier">
+      <option value="">All price points</option>
+      <option value="under25">Under $25</option>
+      <option value="under50">Under $50</option>
+      <option value="premium">Premium</option>
+    </select>
+
+    <div id="count" role="status" aria-live="polite">Loading catalog&hellip;</div>
+  </section>
+
+  <main>
+    <section class="catalog" aria-label="Showroom catalog">
+      <div id="cards">
+        <div class="card-grid">
+          <article class="card" aria-busy="true">
+            <div class="card-thumb"></div>
+            <div class="card-meta">
+              <div class="card-title">Loading product</div>
+              <div class="card-price">&nbsp;</div>
+            </div>
+          </article>
+          <article class="card" aria-busy="true">
+            <div class="card-thumb"></div>
+            <div class="card-meta">
+              <div class="card-title">Loading product</div>
+              <div class="card-price">&nbsp;</div>
+            </div>
+          </article>
+          <article class="card" aria-busy="true">
+            <div class="card-thumb"></div>
+            <div class="card-meta">
+              <div class="card-title">Loading product</div>
+              <div class="card-price">&nbsp;</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div>
+        <strong>Honors Showroom</strong>
+        <p>Curated selections and branded experiences for your team.</p>
+      </div>
+      <img src="Assets/Honors/Honors%20Thick%20Logo.png" alt="Honors" />
+    </div>
+  </footer>
+
+  <aside id="detail" class="detail" aria-hidden="true">
+    <div class="overlay" id="detail-overlay" tabindex="-1" aria-hidden="true"></div>
+    <div class="drawer" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+      <button class="close" id="detail-close" type="button" aria-label="Close details">&times;</button>
+      <div class="media">
+        <div class="hero" id="detail-hero"></div>
+        <div class="thumbs" aria-label="Product gallery thumbnails"></div>
+      </div>
+      <div class="info">
+        <h2 id="detail-title"></h2>
+        <div class="price" id="detail-price"></div>
+        <p id="detail-desc"></p>
+        <div class="imprint" id="detail-imp"></div>
+        <div class="tags" id="detail-tags" aria-label="Product tags"></div>
+        <a class="preview-link" id="detail-preview" href="#" target="_blank" rel="noopener">Preview</a>
+        <div id="detail-variants"></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <div class="lightbox-overlay" id="lightbox-overlay" tabindex="-1"></div>
+    <figure class="lightbox-content" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption">
+      <button class="lightbox-close" id="lightbox-close" type="button" aria-label="Close image">&times;</button>
+      <img id="lightbox-image" src="" alt="" />
+      <figcaption id="lightbox-caption"></figcaption>
+    </figure>
+  </div>
+
+  <script defer src="scripts/showroom.js"></script>
+</body>
+</html>
