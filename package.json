@@ -1,5 +1,5 @@
 {
-  "name": "rocket-catalog",
+  "name": "Honors-Showroom-catalog",
   "private": true,
   "scripts": {
     "start": "http-server ./ -p ${PORT:-3000} -c-1",
