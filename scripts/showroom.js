@@ -62,6 +62,7 @@
 
   const state = {
     cardsEl: null,
+    cardsGridEl: null,
     countEl: null,
     detailEl: null,
     titleEl: null,
@@ -191,9 +192,28 @@
     state.previewLink = previewLink;
   }
 
+  function ensureCardsGrid(){
+    if(!state.cardsEl) return false;
+
+    if(state.cardsEl.classList.contains('card-grid')){
+      state.cardsGridEl = state.cardsEl;
+      return true;
+    }
+
+    const existing = state.cardsEl.querySelector('.card-grid');
+    if(existing){
+      state.cardsGridEl = existing;
+      return true;
+    }
+
+    state.cardsEl.classList.add('card-grid');
+    state.cardsGridEl = state.cardsEl;
+    return true;
+  }
+
   function renderCards(products){
-    if(!state.cardsEl) return;
-    state.cardsEl.innerHTML = '';
+    if(!state.cardsGridEl) return;
+    state.cardsGridEl.innerHTML = '';
     products.forEach(product => {
       const card = document.createElement('a');
       card.className = 'card';
@@ -236,7 +256,7 @@
         }
       });
 
-      state.cardsEl.appendChild(card);
+      state.cardsGridEl.appendChild(card);
     });
 
     if(state.countEl){
@@ -482,6 +502,11 @@
     state.detailEl = document.getElementById('detail');
     if(!state.cardsEl || !state.detailEl){
       console.warn('Showroom markup is missing required containers.');
+      return;
+    }
+
+    if(!ensureCardsGrid()){
+      console.warn('Showroom cards container is missing a grid wrapper.');
       return;
     }
 
