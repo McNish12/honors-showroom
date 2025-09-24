@@ -1,38 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Showroom Demo</title>
+  <meta charset="UTF-8" />
+  <title>Honors Showroom (Live Catalog)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { font-family: sans-serif; margin: 20px; }
-    #cards.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-    .card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; text-decoration: none; color: inherit; display: block; }
-    .card-thumb img { width: 100%; height: auto; border-radius: 6px; }
-    .card-meta { margin-top: 8px; }
-    .card-title { font-weight: bold; margin-bottom: 4px; }
-    #detail { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:#fff; padding:20px; z-index:1000; overflow:auto; }
-    #detail.open { display: block; }
-    #detail .thumbs img { width: 60px; margin: 5px; cursor: pointer; }
-    #detail-close { float: right; font-size: 24px; background: none; border: none; cursor: pointer; }
+    body { font-family: system-ui, sans-serif; margin: 20px; }
+    header { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    #nav { display:flex; gap:10px; flex-wrap:wrap; }
+    #nav .nav-link { padding:6px 10px; border:1px solid #ddd; border-radius:8px; text-decoration:none; color:inherit; }
+    #count { margin-left:auto; color:#555; }
+    .category-title { margin:28px 0 10px; font-size:1.15rem; }
+    .card-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:16px; }
+    .card { display:block; border:1px solid #e5e7eb; border-radius:12px; padding:12px; text-decoration:none; color:inherit; background:#fff; }
+    .card-thumb img { width:100%; height:auto; border-radius:8px; object-fit:contain; }
+    .card-title { font-weight:600; margin-top:8px; }
+    .card-price { color:#374151; margin-top:4px; }
+    /* Drawer */
+    #detail { position:fixed; inset:0; display:none; z-index:1000; }
+    #detail.open { display:block; }
+    #detail-overlay { position:absolute; inset:0; background:rgba(0,0,0,.45); }
+    #detail .panel { position:absolute; right:0; top:0; bottom:0; width:min(720px, 92vw); background:#fff; padding:20px; overflow:auto; }
+    #detail-close { position:absolute; top:10px; right:10px; font-size:24px; background:none; border:none; cursor:pointer; }
+    #detail-hero img { width:100%; height:auto; border-radius:12px; }
+    .thumbs { display:flex; gap:8px; margin-top:10px; }
+    .thumbs .thumb img { width:64px; height:64px; object-fit:cover; border-radius:8px; cursor:pointer; }
+    .variant-table { width:100%; border-collapse:collapse; margin-top:12px; }
+    .variant-table th, .variant-table td { border:1px solid #e5e7eb; padding:8px; text-align:left; }
+    #detail-tags span { display:inline-block; padding:4px 8px; border:1px solid #ddd; border-radius:999px; margin:4px 6px 0 0; font-size:.9rem; }
+    .preview-link { display:inline-block; margin-top:10px; }
   </style>
 </head>
 <body>
+  <header>
+    <nav id="nav"></nav>
+    <div id="count"></div>
+  </header>
 
-  <h1>Showroom Demo</h1>
-  <div id="count"></div>
-  <div id="cards"></div>
+  <main id="cards"></main>
 
   <div id="detail" aria-hidden="true">
-    <button id="detail-close">×</button>
-    <h2 id="detail-title"></h2>
-    <div id="detail-price"></div>
-    <div id="detail-desc"></div>
-    <div id="detail-variants"></div>
-    <div id="detail-hero"></div>
-    <div class="thumbs"></div>
-    <div class="overlay"></div>
+    <div id="detail-overlay"></div>
+    <div class="panel">
+      <button id="detail-close" aria-label="Close">×</button>
+      <h2 id="detail-title"></h2>
+      <div id="detail-price"></div>
+      <p id="detail-desc"></p>
+      <p id="detail-imp"></p>
+      <div id="detail-tags"></div>
+      <a id="detail-preview" class="preview-link" target="_blank" rel="noopener"></a>
+      <div id="detail-hero"></div>
+      <div class="thumbs"></div>
+      <div id="detail-variants"></div>
+    </div>
   </div>
 
-  <script src="showroom.js"></script>
+  <!-- Papa Parse (CSV parser) is required by catalog.js -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- Load the live catalog -->
+  <script src="catalog.js"></script>
 </body>
 </html>
