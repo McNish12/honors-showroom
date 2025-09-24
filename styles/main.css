@@ -47,9 +47,8 @@ a:hover{text-decoration:underline}
 }
 
 .card-grid{
-  display:grid;
-  gap:16px;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  .card-grid{
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .card{
@@ -118,4 +117,9 @@ footer img{height:50px;width:auto}
 @media(max-width:800px){
   .controls{grid-template-columns:1fr}
   .navlinks{display:none}
+}
+@media (min-width: 1200px){
+  .card-grid{
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
