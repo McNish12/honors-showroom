@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Showroom Demo</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    #cards.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; text-decoration: none; color: inherit; display: block; }
+    .card-thumb img { width: 100%; height: auto; border-radius: 6px; }
+    .card-meta { margin-top: 8px; }
+    .card-title { font-weight: bold; margin-bottom: 4px; }
+    #detail { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:#fff; padding:20px; z-index:1000; overflow:auto; }
+    #detail.open { display: block; }
+    #detail .thumbs img { width: 60px; margin: 5px; cursor: pointer; }
+    #detail-close { float: right; font-size: 24px; background: none; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h1>Showroom Demo</h1>
+  <div id="count"></div>
+  <div id="cards"></div>
+
+  <div id="detail" aria-hidden="true">
+    <button id="detail-close">×</button>
+    <h2 id="detail-title"></h2>
+    <div id="detail-price"></div>
+    <div id="detail-desc"></div>
+    <div id="detail-variants"></div>
+    <div id="detail-hero"></div>
+    <div class="thumbs"></div>
+    <div class="overlay"></div>
+  </div>
+
+  <script src="showroom.js"></script>
+</body>
+</html>
