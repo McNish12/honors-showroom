@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Honors Showroom (Live Catalog)</title>
+  <title>Honors Showroom</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { font-family: system-ui, sans-serif; margin: 20px; }
@@ -55,10 +55,22 @@
     </div>
   </div>
 
-  <!-- Papa Parse (CSV parser) is required by catalog.js -->
+  <!-- Papa Parse (CSV parser) -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  <!-- Load the live catalog -->
-  <script src="catalog.js"></script>
+  <!-- Try live catalog, fallback to showroom -->
+  <script>
+    (async () => {
+      try {
+        await import('./catalog.js'); // try to load live catalog
+      } catch (err) {
+        console.error('Live catalog failed, falling back to showroom.js', err);
+        const s = document.createElement('script');
+        s.src = 'showroom.js';
+        document.body.appendChild(s);
+      }
+    })();
+  </script>
 </body>
 </html>
+
