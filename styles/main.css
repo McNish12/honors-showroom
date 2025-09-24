@@ -62,15 +62,13 @@ a:hover{text-decoration:underline}
   color:inherit;
   text-decoration:none;
 }
-
-.card .card-thumb{
-  width:100%;
-  aspect-ratio:3 / 4;
-  background:#fafafa;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
+.card .card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* No cropping, but tall images look smaller */
+  display: block;
 }
+
 .card .card-thumb img{
   width:100%;
   height:100%;
