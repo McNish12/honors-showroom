@@ -46,11 +46,19 @@ a:hover{text-decoration:underline}
   margin-top:0;
 }
 
+/* ✅ Correct grid rule */
 .card-grid{
-  .card-grid{
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  display:grid;
+  gap:16px;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
 }
 
+/* Force 5 columns on desktop */
+@media (min-width: 1200px){
+  .card-grid{ grid-template-columns: repeat(5, 1fr); }
+}
+
+/* Cards */
 .card{
   background:#fff;
   border:1px solid #eee;
@@ -63,6 +71,7 @@ a:hover{text-decoration:underline}
   text-decoration:none;
 }
 
+/* Thumbnail box */
 .card .card-thumb{
   width:100%;
   aspect-ratio:3 / 4;
@@ -71,17 +80,15 @@ a:hover{text-decoration:underline}
   place-items:center;
   overflow:hidden;
 }
-.card .card-thumb img{
+
+/* ✅ Always show full image (no crop) */
+.card > .card-thumb > img{
   width:100%;
   height:100%;
-  object-fit:contain;
+  object-fit: contain !important;   /* defend against any old 'cover' rule */
+  object-position: center center;
   display:block;
 }
-
-.card .card-meta{padding:12px 14px;display:grid;gap:8px}
-.card .card-title{font-family:Montserrat,system-ui;font-weight:700}
-.card .card-price{font-family:Montserrat,system-ui;font-weight:700}
-
 
 /* Detail drawer */
 .detail{position:fixed;top:0;left:0;right:0;bottom:0;display:none;z-index:50}
