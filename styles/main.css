@@ -47,8 +47,9 @@ a:hover{text-decoration:underline}
 }
 
 .card-grid{
-  .card-grid{
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  display:grid;
+  gap:16px;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .card{
@@ -62,23 +63,29 @@ a:hover{text-decoration:underline}
   color:inherit;
   text-decoration:none;
 }
-.card .card-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* No cropping, but tall images look smaller */
-  display: block;
+
+/* Thumbnail container */
+.card .card-thumb{
+  width:100%;
+  aspect-ratio:3 / 4;
+  background:#fafafa;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
 }
 
+/* Always show full image (no crop) */
 .card .card-thumb img{
   width:100%;
   height:100%;
-  object-fit:contain;
+  object-fit:contain; /* full award visible */
   display:block;
 }
 
 .card .card-meta{padding:12px 14px;display:grid;gap:8px}
 .card .card-title{font-family:Montserrat,system-ui;font-weight:700}
 .card .card-price{font-family:Montserrat,system-ui;font-weight:700}
+
 
 
 /* Detail drawer */
