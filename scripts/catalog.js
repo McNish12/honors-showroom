@@ -1,6 +1,7 @@
 // Honors OS showroom feed — active + visible showroomProducts, managed in
 // the Honors OS Inventory tab (replaces the old published Google Sheets CSVs).
 const FEED_URL = "https://us-central1-honors-os.cloudfunctions.net/showroomFeed";
+const INQUIRY_URL = "https://us-central1-honors-os.cloudfunctions.net/showroomInquiry";
 
 async function fetchCatalog(){
   const res = await fetch(FEED_URL);
@@ -235,12 +236,78 @@ async function main(){
 
   window.renderCatalog=renderCatalog;
 
+  // ── Request-a-Quote (posts to the Honors OS order inbox) ──
+  let quoteProduct=null;
+  let quoteRequestId=null;
+  const quoteForm=document.getElementById('quote-form');
+  const quoteOpen=document.getElementById('quote-open');
+  const quoteStatus=document.getElementById('quote-status');
+
+  function resetQuote(product){
+    quoteProduct=product;
+    quoteRequestId=(crypto.randomUUID&&crypto.randomUUID())||`${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    quoteForm.reset();
+    quoteForm.hidden=true;
+    quoteOpen.hidden=false;
+    quoteStatus.textContent='';
+    quoteStatus.className='quote-status';
+  }
+
+  quoteOpen.addEventListener('click',()=>{
+    quoteOpen.hidden=true;
+    quoteForm.hidden=false;
+    quoteForm.customerName.focus();
+  });
+
+  quoteForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    if(!quoteForm.reportValidity()) return;
+    const submitBtn=quoteForm.querySelector('button[type=submit]');
+    submitBtn.disabled=true;
+    quoteStatus.textContent='Sending…';
+    quoteStatus.className='quote-status';
+    try{
+      const f=quoteForm;
+      const qty=Math.max(1,Number(f.quantity.value)||1);
+      const res=await fetch(INQUIRY_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          requestId:quoteRequestId,
+          customerName:f.customerName.value.trim(),
+          customerEmail:f.customerEmail.value.trim(),
+          customerPhone:f.customerPhone.value.trim(),
+          organization:f.organization.value.trim(),
+          neededBy:f.neededBy.value,
+          message:f.message.value.trim(),
+          website:f.website.value,
+          items:quoteProduct?[{productId:quoteProduct.id,name:quoteProduct.name,quantity:qty}]:[]
+        })
+      });
+      if(!res.ok){
+        const body=await res.json().catch(()=>({}));
+        throw new Error(body.error||`Request failed (${res.status})`);
+      }
+      quoteForm.hidden=true;
+      quoteStatus.textContent='Request sent! We’ll get back to you within one business day.';
+      quoteStatus.className='quote-status ok';
+    }catch(err){
+      quoteStatus.textContent=(err instanceof TypeError)
+        ? 'Couldn’t reach the server — please try again, or email sales@honorsone.com.'
+        : (err.message||'Something went wrong — please email sales@honorsone.com.');
+      quoteStatus.className='quote-status err';
+    }finally{
+      submitBtn.disabled=false;
+    }
+  });
+
   function showDetail(id){
     const product=catalog.find(p=>p.id===id);
     const detailEl=document.getElementById('detail');
     if(!product){ detailEl.classList.remove('open'); location.hash=''; return; }
 
     detailEl.classList.add('open');
+    resetQuote(product);
 
     document.getElementById('detail-title').textContent=product.name;
     document.getElementById('detail-desc').textContent=product.description||'';

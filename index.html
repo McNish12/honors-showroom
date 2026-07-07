@@ -53,6 +53,24 @@
         <div id="detail-tags" class="tags"></div>
         <a id="detail-preview" class="preview-link" target="_blank"></a>
         <div id="detail-variants"></div>
+
+        <div class="quote">
+          <button id="quote-open" class="quote-btn" type="button">Request a Quote</button>
+          <form id="quote-form" hidden novalidate>
+            <div class="quote-grid">
+              <label>Name*<input name="customerName" required maxlength="200" autocomplete="name"></label>
+              <label>Email*<input name="customerEmail" type="email" required maxlength="150" autocomplete="email"></label>
+              <label>Phone<input name="customerPhone" type="tel" maxlength="50" autocomplete="tel"></label>
+              <label>Organization<input name="organization" maxlength="200" autocomplete="organization"></label>
+              <label>Quantity<input name="quantity" type="number" min="1" value="1"></label>
+              <label>Needed by<input name="neededBy" type="date"></label>
+            </div>
+            <label class="quote-message">Message<textarea name="message" rows="3" maxlength="2000" placeholder="Tell us about your event, engraving text, logo, etc."></textarea></label>
+            <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" >
+            <button type="submit" class="quote-btn">Send Request</button>
+            <div id="quote-status" class="quote-status" role="status"></div>
+          </form>
+        </div>
       </div>
     </div>
   </section>
