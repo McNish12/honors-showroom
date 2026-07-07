@@ -36,10 +36,11 @@ These screens exist today and are the redesign target. Frames at **1280 desktop*
    - Title, price (single, range, or "Quote Upon Request"), description
    - Imprint methods, tag chips, optional 3D preview link
    - Variant table: size/option + price rows
+   - Request-a-Quote form (already built, lives at the bottom of the drawer): collapsed "Request a Quote" button that expands to fields — Name* and Email* (required), Phone, Organization, Quantity, Needed-by date, Message textarea — with a "Send Request" button and a status line
 3. **Image lightbox** (fullscreen image view with close button)
 4. **404 page** (simple, links back to catalog)
 
-**States to cover:** loading, empty search results, product with no image, long product names, 1-variant vs many-variant tables.
+**States to cover:** loading, empty search results, product with no image, long product names, 1-variant vs many-variant tables. For the quote form: collapsed, expanded, submitting, success message, and error ("Couldn't reach the server") states.
 
 ## 3. Phase 2 — Admin MVP (wireframes are fine)
 
@@ -54,7 +55,7 @@ An internal Firebase-backed admin tool is planned (see `FIREBASE_ADMIN_PLAN.md`)
 
 ## 4. Phase 3 — Later (don't start yet)
 
-- Customer quote/inquiry form with artwork upload
+- Artwork upload added to quote requests (the basic quote form is in Phase 1)
 - Plaque verbiage collection ("what should the plaque say")
 - Plaque designer concept
 
