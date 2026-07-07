@@ -1,6 +1,6 @@
 # Honors Showroom — Figma Design Plan (for Nik)
 
-Goal: design the customer-facing Honors Showroom catalog first, then wireframe the upcoming admin tool. The live site is a static catalog fed by Google Sheets — everything below reflects what's actually built or planned in this repo.
+Goal: design the customer-facing Honors Showroom catalog first, then wireframe the upcoming admin tool. The live site is a static catalog fed by the Honors OS showroomFeed — everything below reflects what's actually built or planned in this repo.
 
 ## 1. Brand foundations (match what's live today)
 
