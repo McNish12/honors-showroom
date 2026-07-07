@@ -1,17 +1,14 @@
-// Published-to-web CSVs for Products & Variants
-const PRODUCTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRU7hseo3Sa3Y5oTSb5fIjItVIC8JKW0lJdRFK4bCpxQJHfz9nTQjSXrh2Bhkx5J5gG69PO4IRUYIg0/pub?gid=653601520&single=true&output=csv";
-const VARIANTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRU7hseo3Sa3Y5oTSb5fIjItVIC8JKW0lJdRFK4bCpxQJHfz9nTQjSXrh2Bhkx5J5gG69PO4IRUYIg0/pub?gid=140795318&single=true&output=csv";
+// Honors OS showroom feed — active + visible showroomProducts, managed in
+// the Honors OS Inventory tab (replaces the old published Google Sheets CSVs).
+const FEED_URL = "https://us-central1-honors-os.cloudfunctions.net/showroomFeed";
 
-async function fetchCSV(url){
-  const res = await fetch(url,{cache:'no-store'});
-  const text = await res.text();
-  const { data } = Papa.parse(text,{header:true});
-  return data.filter(row=>Object.values(row).some(v=>v!==undefined&&String(v).trim()!==""));
+async function fetchCatalog(){
+  const res = await fetch(FEED_URL);
+  if(!res.ok) throw new Error(`Feed fetch failed: ${res.status}`);
+  const { products } = await res.json();
+  return products || [];
 }
-const norm=s=>(s||'').toString().toLowerCase();
-const normId=id=>norm(id).replace(/^rk-/,'');
 const normCat=s=>(s||'').toString().trim().toLowerCase();
-const toNum=x=>{ if(x==null) return null; const n=Number(String(x).replace(/[^0-9.\-]/g,'')); return isFinite(n)?n:null; };
 const fmtUSD=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'});
 // Display formatted USD price when positive; otherwise show a quote request message
 function displayPrice(p){
@@ -49,46 +46,6 @@ function buildNavFromCategories(products){
     a.textContent=cat;
     navEl.appendChild(a);
   });
-}
-
-// Resolve values using possible header aliases
-function pick(row, aliases){
-  for(const key of aliases){
-    const v=row[key];
-    if(v!=null && String(v).trim()!=='') return v;
-  }
-  return '';
-}
-
-// Acceptable column names for each logical field
-const PRODUCT_COLS={
-  status:    ['Status','Approval Status','status'],
-  slug:      ['Slug','Product ID','product_id','slug','ID','id'],
-  name:      ['Product Name','Name','Item Name','title'],
-  category:  ['Category','Categories','category'],
-  preview:   ['Preview','preview','Preview Link','Preview URL','3D Preview URL','model_3d_url','Model 3D URL'],
-  thumb:     ['Thumbnail URL','Image','Image URL','Primary Image','primary_image_url','image_url','primary image'],
-  description:['Description','Product Description','description'],
-  gallery:   ['Gallery URLs','Gallery','gallery_urls','gallery'],
-  imprint:   ['Imprint Methods','Imprint Method','imprint_methods','imprint'],
-  tags:      ['Tags','Tag','tags'],
-  approved:  ['Approved','approved']
-};
-const VARIANT_COLS={
-  productId: ['Product ID','product_id','Slug','slug','ID','id'],
-  size:      ['Size','Option','Variant','Spec','option1_value','size'],
-  price:     ['Price','Unit Price','Cost','price','unit_price']
-};
-
-function logUnmatched(rows, cols, label){
-  const sample=rows.slice(0,3).map((row,i)=>{
-    const missing=[];
-    for(const [field,aliases] of Object.entries(cols)){
-      if(!aliases.some(a=>a in row)) missing.push(field);
-    }
-    return missing.length?{row:i+1,missing}:null;
-  }).filter(Boolean);
-  if(sample.length) console.warn(`Unmatched ${label} columns`, sample);
 }
 
 /* ========= Lightbox (self-contained; no HTML changes required) ========= */
@@ -195,60 +152,20 @@ function ensureLightbox(){
 /* ========= end lightbox ========= */
 
 async function main(){
-  const [products, variants] = await Promise.all([fetchCSV(PRODUCTS_CSV), fetchCSV(VARIANTS_CSV)]);
-
-  logUnmatched(products, PRODUCT_COLS, 'product');
-  logUnmatched(variants, VARIANT_COLS, 'variant');
-
-  const byProduct = variants.reduce((m,v)=>{
-    const k = normId(pick(v, VARIANT_COLS.productId));
-    if(!k) return m;
-    const size = pick(v, VARIANT_COLS.size);
-    const price = toNum(pick(v, VARIANT_COLS.price));
-    (m[k] = m[k] || []).push({ size, price });
-    return m;
-  }, {});
-
-  const statuses = products.map(p=>pick(p, PRODUCT_COLS.status));
-  const approvals = products.map(p=>pick(p, PRODUCT_COLS.approved));
-  const catalog = products
-    .filter((p,i) => norm(statuses[i])==='approved' || norm(approvals[i])==='true')
-    .map(p=>{
-      const id=normId(pick(p, PRODUCT_COLS.slug));
-      const name=pick(p, PRODUCT_COLS.name);
-      const vs = (byProduct[id] || []).slice();
-      const nums = vs.map(v => v.price).filter(n => n != null);
-      const minPrice = nums.length ? Math.min(...nums) : null;
-      const maxPrice = nums.length ? Math.max(...nums) : null;
-      vs.sort((a,b)=>{
-        const na=a.price, nb=b.price;
-        if(na!=null&&nb!=null) return na-nb;
-        if(na!=null) return -1;
-        if(nb!=null) return 1;
-        return (a.size||'').localeCompare(b.size||'');
-      });
-      return {
-        id,
-        name,
-        category:pick(p, PRODUCT_COLS.category),
-        preview:pick(p, PRODUCT_COLS.preview),
-        thumb:pick(p, PRODUCT_COLS.thumb),
-        description:pick(p, PRODUCT_COLS.description),
-        gallery:pick(p, PRODUCT_COLS.gallery),
-        imprint:pick(p, PRODUCT_COLS.imprint),
-        tags:pick(p, PRODUCT_COLS.tags),
-        variants:vs,
-        minPrice,maxPrice
-      };
-    });
+  let catalog;
+  try {
+    catalog = await fetchCatalog();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('cards').innerHTML =
+      `<div style="padding:16px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;">Catalog is temporarily unavailable. Please refresh in a moment.</div>`;
+    return;
+  }
   buildNavFromCategories(catalog);
 
   if(!catalog.length){
-    const msg = (products.length && (statuses.some(s=>String(s).trim()) || approvals.some(a=>String(a).trim())))
-      ? 'No approved products found.'
-      : 'Check published CSV headers—no matching aliases found.';
     document.getElementById('cards').innerHTML =
-      `<div style="padding:16px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;">${msg}</div>`;
+      `<div style="padding:16px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;">No products are currently visible in the showroom.</div>`;
     return;
   }
 
@@ -327,11 +244,11 @@ async function main(){
 
     document.getElementById('detail-title').textContent=product.name;
     document.getElementById('detail-desc').textContent=product.description||'';
-    document.getElementById('detail-imp').textContent=product.imprint||'';
+    document.getElementById('detail-imp').textContent=(product.imprint||[]).join(', ');
 
     const tagsEl=document.getElementById('detail-tags');
     tagsEl.innerHTML='';
-    (product.tags||'').split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>{
+    (product.tags||[]).map(s=>String(s).trim()).filter(Boolean).forEach(t=>{
       const span=document.createElement('span');
       span.textContent=t;
       tagsEl.appendChild(span);
@@ -358,7 +275,7 @@ async function main(){
     // --- Hero & thumbnails (with lightbox) ---
     const hero=document.getElementById('detail-hero');
     hero.innerHTML='';
-    const gallery=(product.gallery||'').split(/[|,]/).map(s=>s.trim()).filter(Boolean);
+    const gallery=(product.gallery||[]).map(s=>String(s).trim()).filter(Boolean);
     const images = gallery.length ? gallery : [product.thumb].filter(Boolean);
 
     const lb = ensureLightbox();
@@ -456,7 +373,7 @@ async function main(){
     const hash=location.hash;
     const detailEl=document.getElementById('detail');
     if(hash.startsWith('#/p/')){
-      showDetail(normId(hash.slice(4)));
+      showDetail(decodeURIComponent(hash.slice(4)));
     } else {
       detailEl.classList.remove('open');
       const m=hash.match(/^#\/c\/(.+)$/);
@@ -473,7 +390,7 @@ async function main(){
 main().catch(err=>{
   document.getElementById('cards').innerHTML =
     `<div style="padding:16px;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;">
-       Error loading data. Check the published CSV URLs.<br><br>
+       Error loading data. Check the Honors OS showroom feed.<br><br>
        <small>${err}</small>
      </div>`;
 });
